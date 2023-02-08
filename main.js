@@ -2,7 +2,7 @@ const fs = require('fs');
 
 // List of image paths
 const images = [
-    "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\LIB\\img\\iconosbusquedasA\\7ff97c575adfd4576e131ac12aa879f26065e274_iconosBA_georuta.png",
+"C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\LIB\\img\\iconosbusquedasA\\7ff97c575adfd4576e131ac12aa879f26065e274_iconosBA_georuta.png",
 "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\LIB\\img\\iconosbusquedasA\\7ff97c575adfd4576e131ac12aa879f26065e274_iconosBA_dispositivos.png",
 "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\LIB\\img\\iconosbusquedasA\\7ff97c575adfd4576e131ac12aa879f26065e274_iconosBA_tipoevnoti.png",
 "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\LIB\\img\\iconosbusquedasA\\7ff97c575adfd4576e131ac12aa879f26065e274_iconosBA_usuarios.png",
