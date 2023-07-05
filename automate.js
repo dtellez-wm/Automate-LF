@@ -1,14 +1,24 @@
-// Script para automatizar la creacion de look and feels en webmaps
+const fs = require('fs');
+const readline = require('readline');
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
 
-const fs = require(`fs`);
-const path = require(`path`);
+function copyAndReplace(file, oldStr, newStr) {
+    const regex = new RegExp(oldStr, 'g');
+    const newFile = file.replace(regex, newStr);
+    fs.copyFile(file, newFile, (err) => {
+        if (err) {
+            console.error(`Error al copiar el archivo: ${err}`);
+            return;
+        }
+        // console.log(`Archivo copiado exitosamente: ${newFile}`);
+    });
+}
 
-const oldString = `2bba05d5`; // Reemplaza esto con el hash del cliente que servira de base
-const newString = `d41d8cd98f00b204e9800998ecf8427e`; // Reemplaza `NUEVA_CADENA` con el hash del nuevo cliente
-
-
-// List of image paths
-const images = [
+function main(oldString, newString) {
+    const images = [
   `C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\LIB\\img\\iconosbusquedasA\\${oldString}_iconosBA_georuta.png`,
   `C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\LIB\\img\\iconosbusquedasA\\${oldString}_iconosBA_dispositivos.png`,
   `C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\LIB\\img\\iconosbusquedasA\\${oldString}_iconosBA_tipoevnoti.png`,
@@ -170,18 +180,14 @@ const images = [
   `C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\HomeNewVisor\\img\\${oldString}_iconCheckFlotilla.svg`
 ];
 
-function copyAndReplace(file, oldStr, newStr) {
-  const regex = new RegExp(oldStr, `g`);
-  const newFile = file.replace(regex, newStr);
-  fs.copyFile(file, newFile, (err) => {
-    if (err) {
-      console.error(`Error al copiar el archivo: ${err}`);
-      return;
-    }
-    console.log(`Archivo copiado exitosamente: ${newFile}`);
-  });
+images.forEach((image) => {
+    copyAndReplace(image, oldString, newString);
+});
 }
 
-images.forEach((image) => {
-  copyAndReplace(image, oldString, newString);
+rl.question('Introduzca el hash antiguo: ', oldHash => {
+rl.question('Introduzca el nuevo hash: ', newHash => {
+    main(oldHash, newHash);
+    rl.close();
+});
 });
