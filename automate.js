@@ -1,9 +1,12 @@
-const fs = require('fs');
-const readline = require('readline');
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
+import fs from 'fs';
+import fse from 'fs-extra';
+// import readline from 'readline';
+import readlineSync from 'readline-sync';
+import inquirer from 'inquirer';
+import path from 'path';
+
+const cssFolder = 'C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\js\\WMLPLib-1.0.1';
+const cssDirs = fs.readdirSync(cssFolder).filter(file => file.endsWith('_css'));
 
 function copyAndReplace(file, oldStr, newStr) {
     const regex = new RegExp(oldStr, 'g');
@@ -185,9 +188,38 @@ images.forEach((image) => {
 });
 }
 
-rl.question('Introduzca el hash antiguo: ', oldHash => {
-rl.question('Introduzca el nuevo hash: ', newHash => {
+function askQuestion(query) {
+  const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+  });
+  return new Promise(resolve => rl.question(query, ans => {
+      rl.close();
+      resolve(ans);
+  }))
+}
+
+inquirer.prompt([
+  {
+      type: 'list',
+      name: 'selectedFolder',
+      message: 'Elige una carpeta:',
+      choices: cssDirs,
+  }
+]).then(async answers => {
+  const selectedFolder = answers.selectedFolder;
+  const sourceFolder = path.join(cssFolder, selectedFolder);
+  const destFolder = path.join(cssFolder, selectedFolder + '_copy');
+
+  try {
+    await fse.copy(sourceFolder, destFolder);
+    console.log(`La carpeta ha sido copiada exitosamente a ${destFolder}`);
+
+    const oldHash = readlineSync.question('Introduzca el hash antiguo: ');
+    const newHash = readlineSync.question('Introduzca el nuevo hash: ');
     main(oldHash, newHash);
-    rl.close();
-});
+
+} catch (err) {
+    console.error(err);
+}
 });
