@@ -4,7 +4,7 @@ import inquirer from 'inquirer';
 import path from 'path';
 
 const cssFolder = 'C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\js\\WMLPLib-1.0.1';
-const cssDirs = fs.readdirSync(cssFolder).filter(file => file.endsWith('_css'));
+const configFolder = 'C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\lib\\lookandfeel_local';
 
 function copyAndReplace(file, oldStr, newStr) {
     const regex = new RegExp(oldStr, 'g');
@@ -185,41 +185,56 @@ function main(oldString, newString) {
       copyAndReplace(image, oldString, newString);
   });
   }
+
+
+
   
-  inquirer
-    .prompt([
-      {
-        type: 'list',
-        name: 'selectedFolder',
-        message: 'Elige una carpeta:',
-        choices: cssDirs,
-      },
-      {
-        type: 'input',
-        name: 'copyName',
-        message: 'Introduce el nombre para la copia:',
-      },
-      {
-        type: 'input',
-        name: 'oldHash',
-        message: 'Introduzca el hash antiguo:',
-      },
-      {
-        type: 'input',
-        name: 'newHash',
-        message: 'Introduzca el nuevo hash:',
-      }
-    ])
-    .then(async (answers) => {
-      const { selectedFolder, copyName, oldHash, newHash } = answers;
-      const sourceFolder = path.join(cssFolder, selectedFolder);
-      const destFolder = path.join(cssFolder, copyName);
-  
-      try {
-        await fse.copy(sourceFolder, destFolder);
-        console.log(`La carpeta ha sido copiada exitosamente a ${destFolder}`);
-        main(oldHash, newHash);
-      } catch (err) {
-        console.error(err);
-      }
-    });
+  // Obteniendo solo los directorios que terminan en '_css'
+const cssDirs = fs.readdirSync(cssFolder).filter(file => file.endsWith('_css'));
+
+async function copyFolder(sourceFolder, destFolder) {
+  try {
+    await fse.copy(sourceFolder, destFolder);
+    console.log(`La carpeta ha sido copiada exitosamente a ${destFolder}`);
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+inquirer
+  .prompt([
+    {
+      type: 'list',
+      name: 'selectedFolder',
+      message: 'Elige una carpeta:',
+      choices: cssDirs,
+    },
+    {
+      type: 'input',
+      name: 'copyName',
+      message: 'Introduce el nombre para la copia:',
+    },
+    {
+      type: 'input',
+      name: 'oldHash',
+      message: 'Introduzca el hash antiguo:',
+    },
+    {
+      type: 'input',
+      name: 'newHash',
+      message: 'Introduzca el nuevo hash:',
+    }
+  ])
+  .then(async (answers) => {
+    const { selectedFolder, copyName, oldHash, newHash } = answers;
+    const cssSourceFolder = path.join(cssFolder, selectedFolder);
+    const cssDestFolder = path.join(cssFolder, copyName + '_css');
+    const configSourceFolder = path.join(configFolder, selectedFolder.replace('_css', '_config'));
+    const configDestFolder = path.join(configFolder, copyName + '_config');
+
+    // Copiar las carpetas '_css' y '_config'
+    await copyFolder(cssSourceFolder, cssDestFolder);
+    await copyFolder(configSourceFolder, configDestFolder);
+
+    main(oldHash, newHash);
+  });
