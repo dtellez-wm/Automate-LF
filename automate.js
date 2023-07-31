@@ -1,25 +1,27 @@
-import fs from 'fs';
-import fse from 'fs-extra';
-import inquirer from 'inquirer';
-import path from 'path';
+import fs from "fs";
+import fse from "fs-extra";
+import inquirer from "inquirer";
+import path from "path";
+import readline from "readline";
 
-const cssFolder = 'C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\js\\WMLPLib-1.0.1';
-const configFolder = 'C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\lib\\lookandfeel_local';
+const cssFolder = "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\js\\WMLPLib-1.0.1";
+const configFolder = "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\lib\\lookandfeel_local";
+const estilosPath = `${configFolder}\\_config\\estilos.php`;
 
 function copyAndReplace(file, oldStr, newStr) {
-    const regex = new RegExp(oldStr, 'g');
-    const newFile = file.replace(regex, newStr);
-    fs.copyFile(file, newFile, (err) => {
-        if (err) {
-            console.error(`Error al copiar el archivo: ${err}`);
-            return;
-        }
-        // console.log(`Archivo copiado exitosamente: ${newFile}`);
-    });
+  const regex = new RegExp(oldStr, "g");
+  const newFile = file.replace(regex, newStr);
+  fs.copyFile(file, newFile, (err) => {
+    if (err) {
+      console.error(`Error al copiar el archivo: ${err}`);
+      return;
+    }
+    // console.log(`Archivo copiado exitosamente: ${newFile}`);
+  });
 }
 
 function main(oldString, newString) {
-    const images = [
+  const images = [
     `C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\LIB\\img\\iconosbusquedasA\\${oldString}_iconosBA_georuta.png`,
     `C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\LIB\\img\\iconosbusquedasA\\${oldString}_iconosBA_dispositivos.png`,
     `C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\LIB\\img\\iconosbusquedasA\\${oldString}_iconosBA_tipoevnoti.png`,
@@ -182,15 +184,12 @@ function main(oldString, newString) {
   ];
 
   images.forEach((image) => {
-      copyAndReplace(image, oldString, newString);
+    copyAndReplace(image, oldString, newString);
   });
-  }
+}
 
-
-
-  
-  // Obteniendo solo los directorios que terminan en '_css'
-const cssDirs = fs.readdirSync(cssFolder).filter(file => file.endsWith('_css'));
+// Obteniendo solo los directorios que terminan en '_css'
+const cssDirs = fs.readdirSync(cssFolder).filter((file) => file.endsWith("_css"));
 
 async function copyFolder(sourceFolder, destFolder) {
   try {
@@ -204,37 +203,92 @@ async function copyFolder(sourceFolder, destFolder) {
 inquirer
   .prompt([
     {
-      type: 'list',
-      name: 'selectedFolder',
-      message: 'Elige una carpeta:',
+      type: "list",
+      name: "selectedFolder",
+      message: "Elige una carpeta:",
       choices: cssDirs,
     },
     {
-      type: 'input',
-      name: 'copyName',
-      message: 'Introduce el nombre para la copia:',
+      type: "input",
+      name: "copyName",
+      message: "Introduce el nombre para la copia:",
     },
     {
-      type: 'input',
-      name: 'oldHash',
-      message: 'Introduzca el hash antiguo:',
+      type: "input",
+      name: "oldHash",
+      message: "Introduzca el hash antiguo:",
     },
     {
-      type: 'input',
-      name: 'newHash',
-      message: 'Introduzca el nuevo hash:',
-    }
+      type: "input",
+      name: "newHash",
+      message: "Introduzca el nuevo hash:",
+    },
   ])
   .then(async (answers) => {
     const { selectedFolder, copyName, oldHash, newHash } = answers;
     const cssSourceFolder = path.join(cssFolder, selectedFolder);
-    const cssDestFolder = path.join(cssFolder, copyName + '_css');
-    const configSourceFolder = path.join(configFolder, selectedFolder.replace('_css', '_config'));
-    const configDestFolder = path.join(configFolder, copyName + '_config');
+    const cssDestFolder = path.join(cssFolder, copyName + "_css");
+    const configSourceFolder = path.join(configFolder, selectedFolder.replace("_css", "_config"));
+    const configDestFolder = path.join(configFolder, copyName + "_config");
 
     // Copiar las carpetas '_css' y '_config'
     await copyFolder(cssSourceFolder, cssDestFolder);
     await copyFolder(configSourceFolder, configDestFolder);
+
+    const estilosPath = `${configDestFolder}\\estilos.php`;
+
+    async function processLineByLine(estilosPath) {
+      const fileStream = fs.createReadStream(estilosPath);
+
+      const rl = readline.createInterface({
+        input: fileStream,
+        crlfDelay: Infinity,
+      });
+
+      let newContent = "";
+
+      for await (const line of rl) {
+        let newLine = line;
+        const key = line.split("=")[0].trim();
+
+        // Si la línea contiene exactamente una de las claves que queremos modificar
+        if (
+          key === "$_ESTILO['webmaps']['titulo']" ||
+          key === "$_ESTILO['webmaps']['nombreProv']" ||
+          key === "$_ESTILO['webmaps']['hash']" ||
+          key === "$_ESTILO['webmaps']['hashcxm']" ||
+          key === "$_ESTILO['webmaps']['color_b1']" ||
+          key === "$_ESTILO['webmaps']['color_b1_border']" ||
+          key === "$_ESTILO['webmaps']['color_b1_tooltip']" ||
+          key === "$_ESTILO['webmaps']['color_tabla_selecciona']" ||
+          key === "$_ESTILO['webmaps']['color_b3']" ||
+          key === "$_ESTILO['webmaps']['color_ruta_mapa']"
+        ) {
+          const userInput = await askQuestion("Introduce un valor para " + key + ": ");
+          newLine = line.replace(/"([^"]*)"/, `"${userInput}"`);
+        }
+
+        newContent += newLine + "\n";
+      }
+
+      fs.writeFileSync(estilosPath, newContent);
+    }
+
+    function askQuestion(query) {
+      const rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout,
+      });
+
+      return new Promise((resolve) =>
+        rl.question(query, (ans) => {
+          rl.close();
+          resolve(ans);
+        })
+      );
+    }
+
+    processLineByLine(estilosPath);
 
     main(oldHash, newHash);
   });
