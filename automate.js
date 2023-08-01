@@ -22,6 +22,7 @@ function copyAndReplace(file, oldStr, newStr) {
 
 function main(oldString, newString) {
   const images = [
+    `C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\mobile\\css\\Home\\images\\${oldString}_fondo2.png`,
     `C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\LogIn\\images\\${oldString}_bgLogin.png`,
     `C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\LIB\\img\\iconosbusquedasA\\${oldString}_iconosBA_georuta.png`,
     `C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\LIB\\img\\iconosbusquedasA\\${oldString}_iconosBA_dispositivos.png`,
