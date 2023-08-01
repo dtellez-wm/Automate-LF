@@ -20,8 +20,7 @@ Este script realiza dos tareas principales relacionadas con el procesamiento de 
 3. **Ejecución del Script**: Ejecuta el script utilizando el siguiente comando desde la terminal:
 
    ```bash
-   python nombre-del-archivo.py
-...
+   python logos.py
 
 ## CSS and Configuration Folder Management Script
 
@@ -43,4 +42,4 @@ Este script realiza varias tareas relacionadas con la gestión de carpetas de CSS
 2. **Ejecución del Script**: Ejecuta el script utilizando el siguiente comando desde la terminal:
 
    ```bash
-   node nombre-del-archivo.js
+   node automate.js
