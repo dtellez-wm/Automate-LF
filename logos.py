@@ -2,6 +2,12 @@
 
 import os
 from PIL import Image
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+import time
 
 logos = [
     "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\Home\\images\\Loading\\7ff97c575adfd4576e131ac12aa879f26065e274_imgCompatibilidad.png",
@@ -130,3 +136,29 @@ add_logo_to_images(image_info_objects, logo_path)
 create_canvas_with_white_logo(image_info_objects_white, logo_path)
 
 print("All logos have been processed")
+
+
+
+# Test Block
+
+path = ".\\chromedriver.exe"
+service = Service(executable_path=path)
+driver = webdriver.Chrome(service=service)
+web = "http://dev.avl.local.webmaps.com.mx/"
+
+driver.get(web)  # Abre el navegador en la página web
+
+wait = WebDriverWait(driver, 10)
+login = wait.until(EC.presence_of_element_located((By.ID, "txtUser")))  # Usar la espera aquí
+password = wait.until(EC.presence_of_element_located((By.ID, "txtPass")))  # Usar la espera aquí
+
+# Autenticación
+login.send_keys("david.tellez@webmaps.com.mx")
+password.send_keys("webmaps54474")
+button = driver.find_element(By.ID, "btnIngresar")
+button.click()
+
+# Aquí debes agregar una línea para ingresar la contraseña
+
+time.sleep(10000)  # Mantén el navegador abierto durante 10 segundos
+driver.quit()  # Cierra el navegador

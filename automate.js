@@ -3,10 +3,11 @@ import fse from "fs-extra";
 import inquirer from "inquirer";
 import path from "path";
 import readline from "readline";
+import { exec } from "child_process";
 
 const cssFolder = "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\js\\WMLPLib-1.0.1";
 const configFolder = "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\lib\\lookandfeel_local";
-const estilosPath = `${configFolder}\\_config\\estilos.php`;
+// const estilosPath = `${configFolder}\\_config\\estilos.php`;
 
 function copyAndReplace(file, oldStr, newStr) {
   const regex = new RegExp(oldStr, "g");
@@ -193,13 +194,19 @@ function main(oldString, newString) {
 // Obteniendo solo los directorios que terminan en '_css'
 const cssDirs = fs.readdirSync(cssFolder).filter((file) => file.endsWith("_css"));
 
-async function copyFolder(sourceFolder, destFolder) {
-  try {
-    await fse.copy(sourceFolder, destFolder);
-    console.log(`La carpeta ha sido copiada exitosamente a ${destFolder}`);
-  } catch (err) {
-    console.error(err);
-  }
+function copyFolder(sourceFolder, destFolder) {
+  return new Promise((resolve, reject) => {
+    fse
+      .copy(sourceFolder, destFolder)
+      .then(() => {
+        console.log(`La carpeta ha sido copiada exitosamente a ${destFolder}`);
+        resolve();
+      })
+      .catch((err) => {
+        console.error(err);
+        reject(err);
+      });
+  });
 }
 
 inquirer
@@ -234,64 +241,80 @@ inquirer
     const configDestFolder = path.join(configFolder, copyName + "_config");
 
     // Copiar las carpetas '_css' y '_config'
-    await copyFolder(cssSourceFolder, cssDestFolder);
-    await copyFolder(configSourceFolder, configDestFolder);
+    try {
+      await Promise.all([copyFolder(cssSourceFolder, cssDestFolder), copyFolder(configSourceFolder, configDestFolder)]);
 
-    const estilosPath = `${configDestFolder}\\estilos.php`;
+      const estilosPath = `${configDestFolder}\\estilos.php`;
 
-    async function processLineByLine(estilosPath) {
-      const fileStream = fs.createReadStream(estilosPath);
+      async function processLineByLine(estilosPath) {
+        const fileStream = fs.createReadStream(estilosPath);
 
-      const rl = readline.createInterface({
-        input: fileStream,
-        crlfDelay: Infinity,
-      });
+        const rl = readline.createInterface({
+          input: fileStream,
+          crlfDelay: Infinity,
+        });
 
-      let newContent = "";
+        let newContent = "";
 
-      for await (const line of rl) {
-        let newLine = line;
-        const key = line.split('=')[0].trim();
-      
-        // Si la línea contiene exactamente una de las claves que queremos modificar
-        if (
-          key === "$_ESTILO['webmaps']['titulo']" ||
-          key === "$_ESTILO['webmaps']['nombreProv']" ||
-          key === "$_ESTILO['webmaps']['color_b1']" ||
-          key === "$_ESTILO['webmaps']['color_b1_border']" ||
-          key === "$_ESTILO['webmaps']['color_b1_tooltip']" ||
-          key === "$_ESTILO['webmaps']['color_tabla_selecciona']" ||
-          key === "$_ESTILO['webmaps']['color_b3']" ||
-          key === "$_ESTILO['webmaps']['color_ruta_mapa']"
-        ) {
-          const userInput = await askQuestion("Introduce un valor para " + key + ": ");
-          newLine = line.replace(/"([^"]*)"/, `"${userInput}"`);
-        } else if (key === "$_ESTILO['webmaps']['hash']" || key === "$_ESTILO['webmaps']['hashcxm']") {
-          newLine = line.replace(/"([^"]*)"/, `"${newHash}"`);
+        for await (const line of rl) {
+          let newLine = line;
+          const key = line.split("=")[0].trim();
+
+          // Si la línea contiene exactamente una de las claves que queremos modificar
+          if (
+            key === "$_ESTILO['webmaps']['titulo']" ||
+            key === "$_ESTILO['webmaps']['nombreProv']" ||
+            key === "$_ESTILO['webmaps']['color_b1']" ||
+            key === "$_ESTILO['webmaps']['color_b1_border']" ||
+            key === "$_ESTILO['webmaps']['color_b1_tooltip']" ||
+            key === "$_ESTILO['webmaps']['color_tabla_selecciona']" ||
+            key === "$_ESTILO['webmaps']['color_b3']" ||
+            key === "$_ESTILO['webmaps']['color_ruta_mapa']"
+          ) {
+            const userInput = await askQuestion("Introduce un valor para " + key + ": ");
+            newLine = line.replace(/"([^"]*)"/, `"${userInput}"`);
+          } else if (key === "$_ESTILO['webmaps']['hash']" || key === "$_ESTILO['webmaps']['hashcxm']") {
+            newLine = line.replace(/"([^"]*)"/, `"${newHash}"`);
+          }
+
+          newContent += newLine + "\n";
         }
-      
-        newContent += newLine + "\n";
+
+        fs.writeFileSync(estilosPath, newContent);
       }
-      
 
-      fs.writeFileSync(estilosPath, newContent);
-    }
+      function askQuestion(query) {
+        const rl = readline.createInterface({
+          input: process.stdin,
+          output: process.stdout,
+        });
 
-    function askQuestion(query) {
-      const rl = readline.createInterface({
-        input: process.stdin,
-        output: process.stdout,
-      });
+        return new Promise((resolve) =>
+          rl.question(query, (ans) => {
+            rl.close();
+            resolve(ans);
+          })
+        );
+      }
 
-      return new Promise((resolve) =>
-        rl.question(query, (ans) => {
-          rl.close();
-          resolve(ans);
+      processLineByLine(estilosPath)
+        .then(() => {
+          main(oldHash, newHash);
         })
-      );
+        .then(() => {
+          exec("python logos.py", (error, stdout, stderr) => {
+            if (error) {
+              console.error(`An error occurred: ${error}`);
+              return;
+            }
+            console.log(`Python Output: ${stdout}`);
+            console.error(`Python Error Output: ${stderr}`);
+          });
+        })
+        .catch((err) => {
+          console.error("Error procesando el archivo:", err);
+        });
+    } catch (err) {
+      console.error("Error en la copia de las carpetas:", err);
     }
-
-    processLineByLine(estilosPath);
-
-    main(oldHash, newHash);
   });
