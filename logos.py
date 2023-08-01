@@ -20,7 +20,6 @@ logos = [
   "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\HomeNewVisor\\img\\logos\\7ff97c575adfd4576e131ac12aa879f26065e274_logoHeaderSideNav.png",
   "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\HomeNewVisor\\img\\logos\\7ff97c575adfd4576e131ac12aa879f26065e274_iconBarraHomeLogoCliente.png",
   "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\LogIn\\images\\7ff97c575adfd4576e131ac12aa879f26065e274_3_1_bg.png",
-  "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\LogIn\\images\\7ff97c575adfd4576e131ac12aa879f26065e274_bgLogin.png",
   "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\LogIn\\images\\7ff97c575adfd4576e131ac12aa879f26065e274_logoLogin.png",
   "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\LogIn\\images\\7ff97c575adfd4576e131ac12aa879f26065e274_logoLoginMobile.png",
   "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\mobile\\css\\Home\\images\\7ff97c575adfd4576e131ac12aa879f26065e274_fondo2.png",
