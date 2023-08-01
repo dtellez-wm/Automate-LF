@@ -23,12 +23,24 @@ Este script realiza dos tareas principales relacionadas con el procesamiento de 
    python nombre-del-archivo.py
 ...
 
-CSS and Configuration Folder Management Script
+## CSS and Configuration Folder Management Script
+
 Este script realiza varias tareas relacionadas con la gestión de carpetas de CSS y configuración. Puede copiar y reemplazar nombres de archivos, copiar carpetas, y modificar líneas específicas dentro de un archivo PHP.
 
-Requisitos
-...
+### Requisitos
 
-Instrucciones de Uso
-Ejecución del Script: Ejecuta el script utilizando el siguiente comando desde la terminal:
-node nombre-del-archivo.js
+- Node.js
+- Bibliotecas:
+  - `fs` (File System)
+  - `fse` (fs-extra)
+  - `inquirer`
+  - `path`
+  - `readline`
+
+### Instrucciones de Uso
+
+1. **Configuración de Rutas**: Modifica las constantes `cssFolder`, `configFolder`, y `estilosPath` para que apunten a las ubicaciones correctas en tu sistema.
+2. **Ejecución del Script**: Ejecuta el script utilizando el siguiente comando desde la terminal:
+
+   ```bash
+   node nombre-del-archivo.js
