@@ -10,21 +10,21 @@ logos = [
     "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\Home\\images\\estilos\\7ff97c575adfd4576e131ac12aa879f26065e274_loading.png",
     "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\Home\\images\\estilos\\7ff97c575adfd4576e131ac12aa879f26065e274_bgCenter.png",
     "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\Home\\images\\estilos\\7ff97c575adfd4576e131ac12aa879f26065e274_headerReportes.png",
-    "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\Home\\images\\estilos\\7ff97c575adfd4576e131ac12aa879f26065e274_imgMailHeader001.png",
     "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\servErr\\img\\7ff97c575adfd4576e131ac12aa879f26065e274_logo.png",
-    "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\Mantenimiento\\images\\7ff97c575adfd4576e131ac12aa879f26065e274_logoLogin.png",
     "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\Administradores\\images\\7ff97c575adfd4576e131ac12aa879f26065e274_rastreoMail.png",
     "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\HomeNewVisor\\img\\logos\\7ff97c575adfd4576e131ac12aa879f26065e274_logoClienteBarraTareas.png",
     "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\HomeNewVisor\\img\\logos\\7ff97c575adfd4576e131ac12aa879f26065e274_logoHeaderSideNav.png",
     "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\HomeNewVisor\\img\\logos\\7ff97c575adfd4576e131ac12aa879f26065e274_iconBarraHomeLogoCliente.png",
     "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\LogIn\\images\\7ff97c575adfd4576e131ac12aa879f26065e274_3_1_bg.png",
-    "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\LogIn\\images\\7ff97c575adfd4576e131ac12aa879f26065e274_logoLogin.png",
     #   "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\mobile\\css\\Login\\images\\7ff97c575adfd4576e131ac12aa879f26065e274_logoLogin.svg",
     "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\mobile\\css\\Home\\images\\7ff97c575adfd4576e131ac12aa879f26065e274_iconoApp.png",
     "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\Home\\images\\estilos\\7ff97c575adfd4576e131ac12aa879f26065e274_bgRight.png",
 ]
 
 logos_white = [
+    "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\Home\\images\\estilos\\7ff97c575adfd4576e131ac12aa879f26065e274_imgMailHeader001.png",
+    "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\Mantenimiento\\images\\7ff97c575adfd4576e131ac12aa879f26065e274_logoLogin.png",
+    "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\LogIn\\images\\7ff97c575adfd4576e131ac12aa879f26065e274_logoLogin.png",
     "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\LogIn\\images\\7ff97c575adfd4576e131ac12aa879f26065e274_logoLoginMobile.png",
     "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\AdministracionNew\\images\\7ff97c575adfd4576e131ac12aa879f26065e274_logo-index-avl.png",
     "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\Home\\images\\estilos\\7ff97c575adfd4576e131ac12aa879f26065e274_bgCenter_.png",
@@ -33,7 +33,6 @@ logos_white = [
 
 
 # ... definición de la clase ImageInfo y la función create_image_info_objects ...
-
 class ImageInfo:
     def __init__(self, path, width, height):
         self.name = os.path.basename(path)
@@ -59,8 +58,6 @@ def create_image_info_objects(paths):
     return image_info_objects
 
 # Función para agregar el logotipo a las imágenes existentes
-
-
 def add_logo_to_images(image_info_objects, logo_path):
     logo = Image.open(logo_path)
 
@@ -70,7 +67,7 @@ def add_logo_to_images(image_info_objects, logo_path):
             image = Image.open(image_path)
 
             # Código para agregar el logotipo
-            logo_height = int(image_info.height * 0.9)
+            logo_height = int(image_info.height * 0.6)
             logo_resized = logo.resize(
                 (logo.width * logo_height // logo.height, logo_height))
             pos_x = (image_info.width - logo_resized.width) // 2
