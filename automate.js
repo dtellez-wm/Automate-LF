@@ -249,14 +249,12 @@ inquirer
 
       for await (const line of rl) {
         let newLine = line;
-        const key = line.split("=")[0].trim();
-
+        const key = line.split('=')[0].trim();
+      
         // Si la línea contiene exactamente una de las claves que queremos modificar
         if (
           key === "$_ESTILO['webmaps']['titulo']" ||
           key === "$_ESTILO['webmaps']['nombreProv']" ||
-          key === "$_ESTILO['webmaps']['hash']" ||
-          key === "$_ESTILO['webmaps']['hashcxm']" ||
           key === "$_ESTILO['webmaps']['color_b1']" ||
           key === "$_ESTILO['webmaps']['color_b1_border']" ||
           key === "$_ESTILO['webmaps']['color_b1_tooltip']" ||
@@ -266,10 +264,13 @@ inquirer
         ) {
           const userInput = await askQuestion("Introduce un valor para " + key + ": ");
           newLine = line.replace(/"([^"]*)"/, `"${userInput}"`);
+        } else if (key === "$_ESTILO['webmaps']['hash']" || key === "$_ESTILO['webmaps']['hashcxm']") {
+          newLine = line.replace(/"([^"]*)"/, `"${newHash}"`);
         }
-
+      
         newContent += newLine + "\n";
       }
+      
 
       fs.writeFileSync(estilosPath, newContent);
     }
