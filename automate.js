@@ -7,7 +7,7 @@ import { exec } from "child_process";
 
 const cssFolder = "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\js\\WMLPLib-1.0.1";
 const configFolder = "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\lib\\lookandfeel_local";
-// const estilosPath = `${configFolder}\\_config\\estilos.php`;
+const iniLookAndFeelPath = "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\lib\\inilookandfeel";
 
 function copyAndReplace(file, oldStr, newStr) {
   const regex = new RegExp(oldStr, "g");
@@ -243,6 +243,36 @@ inquirer
     // Copiar las carpetas '_css' y '_config'
     try {
       await Promise.all([copyFolder(cssSourceFolder, cssDestFolder), copyFolder(configSourceFolder, configDestFolder)]);
+
+      async function updateIniLookAndFeel(copyName, selectedFolder) {
+        try {
+          // Leer el contenido del archivo
+          let content = fs.readFileSync(iniLookAndFeelPath, 'utf8');
+      
+          // Reemplazar la sección "instancia_activa"
+          content = content.replace(/(s:16:"instancia_activa";s:)(\d+)(:".*?";)/, (match, p1, p2, p3) => {
+            return p1 + copyName.length + ':"' + copyName + '";';
+          });
+      
+          // Reemplazar la sección que termina con "_config"
+          content = content.replace(/(s:\d+:")(.*?)(_config";i:3;)/, (match, p1, p2, p3) => {
+            return p1 + copyName + p3;
+          });
+      
+          // Escribir el contenido actualizado en el archivo
+          fs.writeFileSync(iniLookAndFeelPath, content);
+          console.log(`Archivo ${iniLookAndFeelPath} actualizado exitosamente.`);
+        } catch (err) {
+          console.error(`Error al actualizar el archivo ${iniLookAndFeelPath}:`, err);
+        }
+      }
+      
+      
+      
+      
+
+       // Actualizar el archivo inilookandfeel
+      await updateIniLookAndFeel(copyName, selectedFolder + "_css"); // <- Agregada la llamada aquí
 
       const estilosPath = `${configDestFolder}\\estilos.php`;
 
