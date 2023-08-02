@@ -255,8 +255,8 @@ inquirer
           });
       
           // Reemplazar la sección que termina con "_config"
-          content = content.replace(/(s:\d+:")(.*?)(_config";i:3;)/, (match, p1, p2, p3) => {
-            return p1 + copyName + p3;
+          content = content.replace(/(s:)(\d+)(:".*?)(_config";i:3;)/, (match, p1, p2, p3, p4) => {
+            return p1 + (copyName.length + "_config".length) + ':"' + copyName + p4;
           });
       
           // Escribir el contenido actualizado en el archivo
@@ -266,6 +266,7 @@ inquirer
           console.error(`Error al actualizar el archivo ${iniLookAndFeelPath}:`, err);
         }
       }
+      
       
       
       

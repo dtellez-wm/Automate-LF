@@ -14,20 +14,20 @@ logos = [
     "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\Home\\images\\estilos\\7ff97c575adfd4576e131ac12aa879f26065e274_headerReportes.jpg",
     "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\Home\\images\\estilos\\7ff97c575adfd4576e131ac12aa879f26065e274_imgPassword.png",
     "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\Home\\images\\estilos\\7ff97c575adfd4576e131ac12aa879f26065e274_loading.png",
-    "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\Home\\images\\estilos\\7ff97c575adfd4576e131ac12aa879f26065e274_bgCenter.png",
     "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\Home\\images\\estilos\\7ff97c575adfd4576e131ac12aa879f26065e274_headerReportes.png",
     "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\servErr\\img\\7ff97c575adfd4576e131ac12aa879f26065e274_logo.png",
     "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\Administradores\\images\\7ff97c575adfd4576e131ac12aa879f26065e274_rastreoMail.png",
-    "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\HomeNewVisor\\img\\logos\\7ff97c575adfd4576e131ac12aa879f26065e274_logoClienteBarraTareas.png",
     "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\HomeNewVisor\\img\\logos\\7ff97c575adfd4576e131ac12aa879f26065e274_logoHeaderSideNav.png",
     "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\HomeNewVisor\\img\\logos\\7ff97c575adfd4576e131ac12aa879f26065e274_iconBarraHomeLogoCliente.png",
     "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\LogIn\\images\\7ff97c575adfd4576e131ac12aa879f26065e274_3_1_bg.png",
     #   "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\mobile\\css\\Login\\images\\7ff97c575adfd4576e131ac12aa879f26065e274_logoLogin.svg",
-    "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\mobile\\css\\Home\\images\\7ff97c575adfd4576e131ac12aa879f26065e274_iconoApp.png",
     "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\Home\\images\\estilos\\7ff97c575adfd4576e131ac12aa879f26065e274_bgRight.png",
 ]
 
 logos_white = [
+    "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\Home\\images\\estilos\\7ff97c575adfd4576e131ac12aa879f26065e274_bgCenter.png",
+    "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\HomeNewVisor\\img\\logos\\7ff97c575adfd4576e131ac12aa879f26065e274_logoClienteBarraTareas.png",
+    "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\mobile\\css\\Home\\images\\7ff97c575adfd4576e131ac12aa879f26065e274_iconoApp.png",
     "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\Home\\images\\estilos\\7ff97c575adfd4576e131ac12aa879f26065e274_imgMailHeader001.png",
     "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\Mantenimiento\\images\\7ff97c575adfd4576e131ac12aa879f26065e274_logoLogin.png",
     "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\default_css\\LogIn\\images\\7ff97c575adfd4576e131ac12aa879f26065e274_logoLogin.png",
@@ -64,6 +64,8 @@ def create_image_info_objects(paths):
     return image_info_objects
 
 # Función para agregar el logotipo a las imágenes existentes
+
+
 def add_logo_to_images(image_info_objects, logo_path):
     logo = Image.open(logo_path)
 
@@ -73,7 +75,7 @@ def add_logo_to_images(image_info_objects, logo_path):
             image = Image.open(image_path)
 
             # Código para agregar el logotipo
-            logo_height = int(image_info.height * 0.6)
+            logo_height = int(image_info.height * 0.9)
             logo_resized = logo.resize(
                 (logo.width * logo_height // logo.height, logo_height))
             pos_x = (image_info.width - logo_resized.width) // 2
@@ -138,7 +140,6 @@ create_canvas_with_white_logo(image_info_objects_white, logo_path)
 print("All logos have been processed")
 
 
-
 # Test Block
 
 path = ".\\chromedriver.exe"
@@ -149,8 +150,10 @@ web = "http://dev.avl.local.webmaps.com.mx/"
 driver.get(web)  # Abre el navegador en la página web
 
 wait = WebDriverWait(driver, 10)
-login = wait.until(EC.presence_of_element_located((By.ID, "txtUser")))  # Usar la espera aquí
-password = wait.until(EC.presence_of_element_located((By.ID, "txtPass")))  # Usar la espera aquí
+login = wait.until(EC.presence_of_element_located(
+    (By.ID, "txtUser")))  # Usar la espera aquí
+password = wait.until(EC.presence_of_element_located(
+    (By.ID, "txtPass")))  # Usar la espera aquí
 
 # Autenticación
 login.send_keys("david.tellez@webmaps.com.mx")
