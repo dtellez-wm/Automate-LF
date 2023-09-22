@@ -37,7 +37,6 @@ logos_white = [
     "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\mobile\\css\\Login\\images\\7ff97c575adfd4576e131ac12aa879f26065e274_MLogin.png",
 ]
 
-
 # ... definición de la clase ImageInfo y la función create_image_info_objects ...
 class ImageInfo:
     def __init__(self, path, width, height):
@@ -49,10 +48,8 @@ class ImageInfo:
     def __str__(self):
         return "ImageInfo(name='{}', width={}, height={})".format(self.name, self.width, self.height)
 
-
 def create_image_info_objects(paths):
     image_info_objects = []
-
     for path in paths:
         if os.path.exists(path):
             image = Image.open(path)
@@ -60,12 +57,9 @@ def create_image_info_objects(paths):
             image_info_objects.append(image_info)
         else:
             print(f"File does not exist: {path}")
-
     return image_info_objects
 
 # Función para agregar el logotipo a las imágenes existentes
-
-
 def add_logo_to_images(image_info_objects, logo_path):
     logo = Image.open(logo_path)
 
@@ -93,8 +87,6 @@ def add_logo_to_images(image_info_objects, logo_path):
             print("Image file does not exist: {}".format(image_path))
 
 # Función para crear un lienzo en blanco y agregar el logotipo
-
-
 def create_canvas_with_white_logo(image_info_objects, logo_path):
     logo = Image.open(logo_path)
 
@@ -138,7 +130,6 @@ add_logo_to_images(image_info_objects, logo_path)
 create_canvas_with_white_logo(image_info_objects_white, logo_path)
 
 print("All logos have been processed")
-
 
 # Test Block
 
