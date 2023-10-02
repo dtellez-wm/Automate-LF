@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 import os
 from PIL import Image
 from selenium.webdriver.common.by import By
