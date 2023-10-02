@@ -1,7 +1,7 @@
 {
   "name": "automate-lf",
   "version": "1.0.0",
-  "description": "",
+  "description": "Este proyecto consta de dos scripts principales que realizan tareas relacionadas con el procesamiento de im�genes y logotipos, y la gesti�n de carpetas de CSS y configuraci�n.",
   "main": "index.js",
   "type": "module",
   "scripts": {
