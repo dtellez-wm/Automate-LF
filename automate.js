@@ -209,6 +209,8 @@ function copyFolder(sourceFolder, destFolder) {
   });
 }
 
+console.log("Para detener la ejecucion, presiona CTRL+C.");
+
 inquirer
   .prompt([
     {
