@@ -9,12 +9,49 @@ const cssFolder = "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\js\\WMLPLib-1.0.1";
 const configFolder = "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\lib\\lookandfeel_local";
 const iniLookAndFeelPath = "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\lib\\inilookandfeel";
 
+function logActivity(message) {
+  const logFilePath = "./archivo.log";
+  const logMessage = `${new Date().toISOString()} - ${message}\n`;
+
+  // Asegurarse de que el directorio existe
+  const logDir = path.dirname(logFilePath);
+  if (!fs.existsSync(logDir)) {
+    try {
+      fs.mkdirSync(logDir, { recursive: true });
+      console.log(`Directorio de log ${logDir} creado exitosamente.`);
+    } catch (err) {
+      console.error("Error creando el directorio de log:", err);
+      return; // Salir de la funcion si no se puede crear el directorio
+    }
+  }
+
+  // Escribir en el archivo de log
+  fs.appendFile(logFilePath, logMessage, (err) => {
+    if (err) {
+      console.error("No se pudo escribir en el archivo de log:", err);
+    } else {
+      console.log(`Mensaje agregado al log: ${logMessage.trim()}`);
+    }
+  });
+}
+
+// Obtener y loggear la rama actual de Git
+exec("git rev-parse --abbrev-ref HEAD", (error, stdout, stderr) => {
+  if (error) {
+    logActivity("Error obteniendo la rama de Git: " + stderr);
+    console.error("Error obteniendo la rama de Git:", error);
+  } else {
+    logActivity("Rama de Git actual: " + stdout.trim());
+  }
+});
+
 function copyAndReplace(file, oldStr, newStr) {
   const regex = new RegExp(oldStr, "g");
   const newFile = file.replace(regex, newStr);
   fs.copyFile(file, newFile, (err) => {
     if (err) {
       console.error(`Error al copiar el archivo: ${err}`);
+      logActivity(`Error al procesar la imagen ${file}: ${err}`);
       return;
     }
     // console.log(`Archivo copiado exitosamente: ${newFile}`);
@@ -188,6 +225,7 @@ function main(oldString, newString) {
 
   images.forEach((image) => {
     copyAndReplace(image, oldString, newString);
+    // logActivity(`Imagen procesada: ${image} - Reemplazado ${oldString} con ${newString}`);
   });
 }
 
@@ -200,10 +238,12 @@ function copyFolder(sourceFolder, destFolder) {
       .copy(sourceFolder, destFolder)
       .then(() => {
         console.log(`La carpeta ha sido copiada exitosamente a ${destFolder}`);
+        logActivity(`La carpeta ${sourceFolder} ha sido copiada exitosamente a ${destFolder}`);
         resolve();
       })
       .catch((err) => {
         console.error(err);
+        logActivity(`Error al copiar de ${sourceFolder} a ${destFolder}: ${err}`);
         reject(err);
       });
   });
@@ -237,6 +277,9 @@ inquirer
   ])
   .then(async (answers) => {
     const { selectedFolder, copyName, oldHash, newHash } = answers;
+    logActivity(
+      `Opciones seleccionadas - Carpeta: ${selectedFolder}, Nombre de copia: ${copyName}, Hash antiguo: ${oldHash}, Hash nuevo: ${newHash}`
+    );
     const cssSourceFolder = path.join(cssFolder, selectedFolder);
     const cssDestFolder = path.join(cssFolder, copyName + "_css");
     const configSourceFolder = path.join(configFolder, selectedFolder.replace("_css", "_config"));
@@ -249,18 +292,18 @@ inquirer
       async function updateIniLookAndFeel(copyName, selectedFolder) {
         try {
           // Leer el contenido del archivo
-          let content = fs.readFileSync(iniLookAndFeelPath, 'utf8');
-      
+          let content = fs.readFileSync(iniLookAndFeelPath, "utf8");
+
           // Reemplazar la sección "instancia_activa"
           content = content.replace(/(s:16:"instancia_activa";s:)(\d+)(:".*?";)/, (match, p1, p2, p3) => {
             return p1 + copyName.length + ':"' + copyName + '";';
           });
-      
+
           // Reemplazar la sección que termina con "_config"
           content = content.replace(/(s:)(\d+)(:".*?)(_config";i:3;)/, (match, p1, p2, p3, p4) => {
             return p1 + (copyName.length + "_config".length) + ':"' + copyName + p4;
           });
-      
+
           // Escribir el contenido actualizado en el archivo
           fs.writeFileSync(iniLookAndFeelPath, content);
           console.log(`Archivo ${iniLookAndFeelPath} actualizado exitosamente.`);
@@ -268,13 +311,8 @@ inquirer
           console.error(`Error al actualizar el archivo ${iniLookAndFeelPath}:`, err);
         }
       }
-      
-      
-      
-      
-      
 
-       // Actualizar el archivo inilookandfeel
+      // Actualizar el archivo inilookandfeel
       await updateIniLookAndFeel(copyName, selectedFolder + "_css"); // <- Agregada la llamada aquí
 
       const estilosPath = `${configDestFolder}\\estilos.php`;
@@ -338,10 +376,13 @@ inquirer
           exec("python logos.py", (error, stdout, stderr) => {
             if (error) {
               console.error(`An error occurred: ${error}`);
+              logActivity(`Error al ejecutar script Python: ${error}`);
               return;
             }
             console.log(`Python Output: ${stdout}`);
+            logActivity(`Salida de script Python: ${stdout}`);
             console.error(`Python Error Output: ${stderr}`);
+            logActivity(`Salida de error de script Python: ${stderr}`);
           });
         })
         .catch((err) => {
