@@ -120,7 +120,7 @@ image_info_objects_white = create_image_info_objects(logos_white)
 
 
 # Ruta del logotipo
-logo_path = "C:\\Users\\david\\Escritorio\\Automate-LF\\logo.png"
+logo_path = "./logo.png"
 
 # Agregar el logotipo a las imágenes existentes
 add_logo_to_images(image_info_objects, logo_path)

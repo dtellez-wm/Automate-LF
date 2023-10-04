@@ -4,6 +4,8 @@ import inquirer from "inquirer";
 import path from "path";
 import readline from "readline";
 import { exec } from "child_process";
+import git from 'simple-git';
+import { log } from "console";
 
 const cssFolder = "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\js\\WMLPLib-1.0.1";
 const configFolder = "C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL\\lib\\lookandfeel_local";
@@ -34,6 +36,22 @@ function logActivity(message) {
     }
   });
 }
+
+// Obtener y loggear la rama de AVL
+
+// Crear una instancia de simple-git en el directorio del repositorio
+const repo = git('C:\\xampp5_6\\htdocs\\WM-AVLWebmapsCL');
+
+// Obtener la rama actual
+repo.revparse(['--abbrev-ref', 'HEAD'], (err, branch) => {
+  logActivity("=====================================================================================");
+  if (err) {
+    logActivity("Error obteniendo la rama de Git: " + err);
+    console.error("Error obteniendo la rama de Git:", err);
+  } else {
+    logActivity("Rama de Git actual de WM-AVLWebmapsCL: " + branch);
+  }
+});
 
 // Obtener y loggear la rama actual de Git
 exec("git rev-parse --abbrev-ref HEAD", (error, stdout, stderr) => {
